@@ -33,7 +33,7 @@ public class UIController : PersistentMonoSingleton<UIController>, IController {
         new Dictionary<UILevelType, LinkedList<UIPageType>>();
 
     private void Awake() {
-           levles = new Transform[Enum.GetValues(typeof(UILevelType)).Length];
+        levles = new Transform[Enum.GetValues(typeof(UILevelType)).Length];
         levles[0] =GameObject.Find("Prepare").transform;            
         levles[1] = GameObject.Find("Main").transform;     
         levles[2] = GameObject.Find("UIPage").transform;
@@ -44,9 +44,9 @@ public class UIController : PersistentMonoSingleton<UIController>, IController {
      
     }
 
-    public async UniTask InitUI() {
+    public async UniTask InitUI() 
+    {
 
-        Debug.LogError("初始化UI");
         foreach (UILevelType value in Enum.GetValues(typeof(UILevelType))) {
             pagesGroup[value] = new LinkedList<UIPageType>();
         }
@@ -66,7 +66,6 @@ public class UIController : PersistentMonoSingleton<UIController>, IController {
         ShowPageAsync(info).Forget();
     }
 
-    // 根据对应页面类型显示页面 如果没有页面则创建 如果有页面则调取并active为true 第二个参数是是否关闭其他开启界面
     public async UniTask<bool> ShowPageAsync(ShowPageInfo info) {
         if (info.closeOther) {
             foreach (var kv in pagesDict) {
@@ -157,22 +156,6 @@ public class UIController : PersistentMonoSingleton<UIController>, IController {
 
         Destroy(pagesDict[type]);
         pagesDict.Remove(type);
-    }
-
-    // 判断当前页面是否是主页
-    private bool IsHomePage() {
-        bool isHomePage = true;
-        pagesDict.ToList().ForEach(delegate(KeyValuePair<UIPageType, GameObject> pair) {
-            if (pair.Value != null && pair.Key != UIPageType.HomepageUI && pair.Value.activeSelf) {
-                isHomePage = false;
-            }
-        });
-        return isHomePage && pagesDict[UIPageType.HomepageUI] != null;
-    }
-
-    // 查找Resources中的路径
-    private string GetPageUrlByType(UIPageType type) {
-        return Util.basePageUrl + type.ToString() + Util.pageSuffix;
     }
 
     private void OnDestroy() {

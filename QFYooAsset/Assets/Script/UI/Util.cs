@@ -25,18 +25,4 @@ namespace Utils {
         Loading = 2,
         Game = 3
     }
-
-    public static class Util {
-
-
-        public static string basePageUrl = "Assets/Samples/YooAsset/2.3.18/Space Shooter/GameRes/UIPanel/";
-        public static string pageSuffix = ".prefab";
-        public static string GetAvatarUrl(int avatarId) {
-            return "Assets/AB/Avatar/" + avatarId + ".png";
-        }
-
-        public static string GetEquipUrl(string equipRid) {
-            return "Assets/AB/Equip/Items/" + equipRid + ".prefab";
-        }
-    }
 }

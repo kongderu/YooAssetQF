@@ -5,35 +5,46 @@ using YooAsset;
 using QFramework;
 using System.Threading.Tasks;
 public enum LaunchStates
-{
+{  
+    FsmYooInitializePackage,
+    FsmYooCheckVersion,
+    FsmYooUpdatePackageManifest,
+    FsmYooCreateDownloader,
+    FsmYooDownloadPackageFiles,
+    FsmYooDownloadPackageOver,
+    AssetsUpdate,
     Login,
     GameMain,
 }
 public class Launch : MonoBehaviour, IController
 {
     public FSM<LaunchStates> FSM = new FSM<LaunchStates>();
-     public EPlayMode PlayMode = EPlayMode.EditorSimulateMode;
+    public EPlayMode PlayMode = EPlayMode.OfflinePlayMode;
     private async Task Awake()
     {
         DontDestroyOnLoad(gameObject);
     }
-       IEnumerator Start()
+       void Start()
     {
+        GameManager.Instance.Behaviour = this;
 
-        GameManager.Instance.Behaviour = this;   
-        // 初始化资源系统
         YooAssets.Initialize();
-        var operation = new PatchOperation("DefaultPackage", PlayMode);
-        YooAssets.StartOperation(operation);
-        yield return operation;
 
-        // 设置默认的资源包
-        var gamePackage = YooAssets.GetPackage("DefaultPackage");
-        YooAssets.SetDefaultPackage(gamePackage);
-       FSM.AddState(LaunchStates.Login, new InitUIState(FSM, this));
+        GameConst.SetBlackboardValue("PackageName", "DefaultPackage");
+        GameConst.SetBlackboardValue("PlayMode", PlayMode);
+
+        FSM.AddState(LaunchStates.FsmYooInitializePackage, new FsmYooInitializePackage(FSM, this));
+        FSM.AddState(LaunchStates.FsmYooCheckVersion, new FsmYooCheckVersion(FSM, this));
+        FSM.AddState(LaunchStates.FsmYooUpdatePackageManifest, new FsmYooUpdatePackageManifest(FSM, this));
+        FSM.AddState(LaunchStates.FsmYooCreateDownloader, new FsmYooCreateDownloader(FSM, this));
+        FSM.AddState(LaunchStates.FsmYooDownloadPackageFiles, new FsmYooDownloadPackageFiles(FSM, this));
+        FSM.AddState(LaunchStates.FsmYooDownloadPackageOver, new FsmYooDownloadPackageOver(FSM, this));
+                
+        FSM.AddState(LaunchStates.Login, new InitUIState(FSM, this));
         FSM.AddState(LaunchStates.GameMain, new GameMainState(FSM, this));
-        FSM.StartState(LaunchStates.Login);
+        FSM.StartState(LaunchStates.FsmYooInitializePackage);
     }
+
     public IArchitecture GetArchitecture()
     {
         return GameSystemEventRegister.Interface;
