@@ -13,7 +13,7 @@ public class FsmYooDownloadPackageOver: AbstractState<LaunchStates, Launch>, ICo
     {
         Debug.LogError("下载资源包完成");
        
-        mFSM.ChangeState(LaunchStates.Login);
+        mFSM.ChangeState(LaunchStates.FsmYooClearCacheBundle);
     }
     public override void OnExit()
     {

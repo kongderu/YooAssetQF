@@ -9,6 +9,7 @@ public enum LaunchStates
     FsmYooInitializePackage,
     FsmYooCheckVersion,
     FsmYooUpdatePackageManifest,
+    FsmYooClearCacheBundle,
     FsmYooCreateDownloader,
     FsmYooDownloadPackageFiles,
     FsmYooDownloadPackageOver,
@@ -27,7 +28,7 @@ public class Launch : MonoBehaviour, IController
        void Start()
     {
         GameManager.Instance.Behaviour = this;
-
+        GameConst.Init();
         YooAssets.Initialize();
 
         GameConst.SetBlackboardValue("PackageName", "DefaultPackage");
@@ -39,7 +40,8 @@ public class Launch : MonoBehaviour, IController
         FSM.AddState(LaunchStates.FsmYooCreateDownloader, new FsmYooCreateDownloader(FSM, this));
         FSM.AddState(LaunchStates.FsmYooDownloadPackageFiles, new FsmYooDownloadPackageFiles(FSM, this));
         FSM.AddState(LaunchStates.FsmYooDownloadPackageOver, new FsmYooDownloadPackageOver(FSM, this));
-                
+        FSM.AddState(LaunchStates.FsmYooClearCacheBundle, new FsmYooClearCacheBundle(FSM, this));
+
         FSM.AddState(LaunchStates.Login, new InitUIState(FSM, this));
         FSM.AddState(LaunchStates.GameMain, new GameMainState(FSM, this));
         FSM.StartState(LaunchStates.FsmYooInitializePackage);
