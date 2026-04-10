@@ -1,0 +1,10 @@
+<linker>
+  <!-- 完整保留 YooAsset 所有程序集，解决基类裁剪问题 -->
+  <assembly fullname="YooAsset" preserve="all"/>
+  <assembly fullname="YooAsset.Runtime" preserve="all"/>
+  
+  <!-- 保留主程序集（如果你的热更新/业务代码在这里） -->
+  <assembly fullname="Assembly-CSharp" preserve="nothing">
+    <type fullname="YooAsset.*" preserve="all"/>
+  </assembly>
+</linker>
