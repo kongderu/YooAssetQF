@@ -9,6 +9,7 @@ namespace GamePlay
         public static async Task Start()
         {
             await UIController.Instance.InitUI();
+            Debug.LogError("UI Initialized");
             UIController.Instance.ShowPage(new ShowPageInfo(UIPageType.UIHome, UILevelType.Main));
         }
     }
