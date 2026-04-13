@@ -12,9 +12,7 @@ public class Launch : MonoBehaviour
     public string PackageName = "DefaultPackage";
     private async Task Awake()
     {
-
         DontDestroyOnLoad(gameObject);
-
     }
     IEnumerator Start()
     {
@@ -50,22 +48,22 @@ public class Launch : MonoBehaviour
         Assembly hotUpdateAss = null;
 
 #if !UNITY_EDITOR
-    var hotfixInfo = gamePackage.GetAssetInfo("HotUpdate.bytes"); 
-    if (!hotfixInfo.IsInvalid)
-    {
-        Debug.LogError($"HotUpdate.bytes 资源无效！Address 配置错误或未打包");
-        return;
-    }
-    
-    var hotfixAsset = YooAssetLoader.LoadAssetSync<TextAsset>(hotfixInfo.Address);
-    if (hotfixAsset == null)
-    {
-        Debug.LogError($"加载 HotUpdate.bytes 失败！");
-        return;
-    }
-    
-    var hotfixAssetBytes = hotfixAsset.bytes;
-    hotUpdateAss = Assembly.Load(hotfixAssetBytes);
+        var hotfixInfo = gamePackage.GetAssetInfo("HotUpdate.bytes");
+        if (!hotfixInfo.IsInvalid)
+        {
+            Debug.LogError($"HotUpdate.bytes 资源无效！Address 配置错误或未打包");
+            return;
+        }
+
+        var hotfixAsset = YooAssetLoader.LoadAssetSync<TextAsset>(hotfixInfo.Address);
+        if (hotfixAsset == null)
+        {
+            Debug.LogError($"加载 HotUpdate.bytes 失败！");
+            return;
+        }
+
+        var hotfixAssetBytes = hotfixAsset.bytes;
+        hotUpdateAss = Assembly.Load(hotfixAssetBytes);
 #else
         hotUpdateAss = AppDomain.CurrentDomain.GetAssemblies()
             .First(a => a.GetName().Name == "HotUpdate");
@@ -75,7 +73,7 @@ public class Launch : MonoBehaviour
         var method = type.GetMethod("Start");
         var task = (Task)method.Invoke(null, null);
         await task;
-        Debug.Log("✅ 热更异步启动完成");
+        Debug.Log("热更异步启动完成");
     }
 }
 
